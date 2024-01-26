@@ -1,0 +1,31 @@
+services:
+  pgdatabase:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=ny_taxi
+    volumes:
+      - ./ny_taxi_postgres_data:/var/lib/postgresql/data:rw
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=moali@deloitte.de
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - 8080:80
+
+  ingest_taxi_table:
+    image: ingest/script:4.0
+    command:  --user=${DB_USER} --password=${DB_PASSWORD} --host=${DB_HOST} --url=${TAXI_TABLE_URL} --db=${DB} --table=${TAXI_TABLE_NAME} --port=${DB_PORT}
+    depends_on:
+      - pgdatabase
+
+  ingest_zone_table:
+    image: ingest/script:4.0
+    command:  --user=${DB_USER} --password=${DB_PASSWORD} --host=${DB_HOST} --url=${ZONES_TABLE_URL} --db=${DB} --table=${ZONES_TABLE_NAME} --port=${DB_PORT}
+    depends_on:
+      - pgdatabase
