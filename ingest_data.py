@@ -24,14 +24,13 @@ def main(params):
     table = params.table
 
     print(params)
-    csv_name = "output.csv"
+    csv_name = f"{table}.csv"
 
     os.system(f"wget {url} -O {csv_name}")
     engine = create_engine(f"postgresql://{user}:{password}@{host}:{port}/{db}")
     engine.connect()
 
     df_iter = pd.read_csv(csv_name, chunksize=100000, iterator=True)
-    #zone_data_df_iter = pd.read_csv("./data/taxi+_zone_lookup.csv", chunksize=100000, iterator=True)
 
     df = next(df_iter)
     df = try_cast_cols(df)
@@ -45,11 +44,6 @@ def main(params):
         df.to_sql(name=table, con=engine, if_exists="append")
         t_end = time()
         print("inserted another chunk, took %.3f seconds" % (t_end - t_start))
-
-    #zone_df = next(zone_data_df_iter)
-    #zone_df.head(n=0).to_sql(name="zone_taxi_data", con=engine, if_exists="replace")
-    #zone_df.to_sql(name="zone_taxi_data", con=engine, if_exists="append")
-
 
 def try_cast_cols(df):
     """
