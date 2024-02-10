@@ -19,13 +19,17 @@ services:
       - 8080:80
 
   ingest_taxi_table:
-    image: moali/ingest:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
     command:  --user=${DB_USER} --password=${DB_PASSWORD} --host=${DB_HOST} --url=${TAXI_TABLE_URL} --db=${DB} --table=${TAXI_TABLE_NAME} --port=${DB_PORT}
     depends_on:
       - pgdatabase
 
   ingest_zone_table:
-    image: moali/ingest:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
     command:  --user=${DB_USER} --password=${DB_PASSWORD} --host=${DB_HOST} --url=${ZONES_TABLE_URL} --db=${DB} --table=${ZONES_TABLE_NAME} --port=${DB_PORT}
     depends_on:
       - pgdatabase

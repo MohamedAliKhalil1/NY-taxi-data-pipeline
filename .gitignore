@@ -1,2 +1,5 @@
 .env
 .DS_Store
+
+# db mounted path
+ny_taxi_postgres_data
